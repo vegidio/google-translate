@@ -55,6 +55,11 @@ public class Translate
 	
 	public String execute(String text, String sl, String dl)
 	{
+		String regex, temp;
+		StringBuilder translated = new StringBuilder();
+		Matcher matcher;
+		Pattern pattern;
+		
 		// We initialize the variables first
 		initialize();
 		
@@ -72,11 +77,26 @@ public class Translate
 		String js = fetchJs(url);
 		
 		// Parse the JS
-		Matcher matcher;
-		final String regex = "\\[\"(.*?)\",";
-		Pattern pattern = Pattern.compile(regex);
+		regex = "\\[\\[(.*?)\\[\\[";
+		pattern = Pattern.compile(regex);
 		matcher = pattern.matcher(js);
-		if(matcher.find()) destText = matcher.group(1);
+		
+		if(matcher.find())
+		{
+			temp = matcher.group(1);
+			regex = "\\[\"(.*?)\"";
+			pattern = Pattern.compile(regex);
+			matcher = pattern.matcher(temp);
+			while(matcher.find()) translated.append(matcher.group(1));
+			destText = translated.toString();
+			
+			// Removing unnecessary spaces
+			destText = destText.replace(" .", ".");
+			destText = destText.replace(" ,", ",");
+			destText = destText.replace(" -", "-");
+			destText = destText.replace(" ;", ";");
+			destText = destText.replace(" :", ":");
+		}
 		
 		return destText;
 	}
