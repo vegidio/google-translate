@@ -7,11 +7,14 @@
 package com.hryun.gtranslate;
 
 import java.io.BufferedReader;
+import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.net.URLEncoder;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -55,7 +58,7 @@ public class Translate
 	
 	public String execute(String text, String sl, String dl)
 	{
-		String regex, temp;
+		String regex, temp, params = null;
 		StringBuilder translated = new StringBuilder();
 		Matcher matcher;
 		Pattern pattern;
@@ -67,41 +70,46 @@ public class Translate
 		destLang = dl;
 		sourceText = text;
 		
+		// URL enconding the text
+		try { params = "q=" + URLEncoder.encode(text, "UTF-8"); }
+		catch(UnsupportedEncodingException e) { e.printStackTrace(); }
+		
 		// Creating the URL
-		text = text.replace(" ", "%20");
-		String url = "http://translate.google.com/translate_a/t?client=t&sl=" + sourceLang +
-				"&tl=" + destLang + "&sc=2&ie=UTF-8&oe=UTF-8&oc=1&otf=2&ssel=0&tsel=0" +
-				"&q=" + text;
+		String url = "https://translate.google.com/translate_a/single?client=t&sl=" + sourceLang + "&tl=" + destLang +
+				"&dt=bd&dt=ex&dt=ld&dt=md&dt=qc&dt=rw&dt=rm&dt=ss&dt=t&dt=at&dt=sw&ie=UTF-8&oe=UTF-8&prev=btn" +
+				"&ssel=0&tsel=0";
 		
 		// Get the JS
-		String js = fetchJs(url);
+		String js = sendPost(url, params);
 		
 		// Parse the JS
-		regex = "\\[\\[(.*?)\\[\\[";
+		regex = "\\[\\[(.*?)\\]\\]";
 		pattern = Pattern.compile(regex);
 		matcher = pattern.matcher(js);
 		
 		if(matcher.find())
 		{
 			temp = matcher.group(1);
-			regex = "\\[\"(.*?)\"";
+			regex = "\\[\"(.*?)\",\"";
 			pattern = Pattern.compile(regex);
 			matcher = pattern.matcher(temp);
 			while(matcher.find()) translated.append(matcher.group(1));
 			destText = translated.toString();
 			
 			// Removing unnecessary spaces
-			destText = destText.replace(" .", ".");
-			destText = destText.replace(" ,", ",");
-			destText = destText.replace(" -", "-");
-			destText = destText.replace(" ;", ";");
-			destText = destText.replace(" :", ":");
+			destText = destText.replace(" .", ".")
+					.replace(" ,", ",")
+					.replace(" -", "-")
+					.replace(" ;", ";")
+					.replace(" :", ":")
+					.replace("( ", "(")
+					.replace(" )", ")");
 		}
 		
 		return destText;
 	}
 	
-	private String fetchJs(String urlString)
+	private String sendPost(String urlString, String params)
 	{
 		String line;
 		StringBuffer html = new StringBuffer();
@@ -112,8 +120,16 @@ public class Translate
 			HttpURLConnection conn = (HttpURLConnection)url.openConnection();
 			
 			// Fake the User-Agent
+			conn.setRequestMethod("POST");
 			conn.setRequestProperty("User-Agent", "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_9_1) AppleWebKit/537.36 " +
 					"(KHTML, like Gecko) Chrome/32.0.1700.107 Safari/537.36");
+			
+			// Setting the post parameters
+			conn.setDoOutput(true);
+			DataOutputStream wr = new DataOutputStream(conn.getOutputStream());
+			wr.writeBytes(params);
+			wr.flush();
+			wr.close();
 			
 			// Check the HTTP response code
 			if(conn.getResponseCode() == 200)
