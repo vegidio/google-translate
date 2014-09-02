@@ -36,7 +36,7 @@ public class TextToSpeech
 
     public byte[] getAudioByteArray()
     {
-        // Process if the request is already processed
+        // Process if the request is not already processed
         if(!isProcessed)
             fetchAudio();
 
@@ -45,7 +45,7 @@ public class TextToSpeech
 
     public void downloadAudio(File mp3File)
     {
-        // Process if the request is already processed
+        // Process if the request is not already processed
         if(!isProcessed)
             fetchAudio();
 
