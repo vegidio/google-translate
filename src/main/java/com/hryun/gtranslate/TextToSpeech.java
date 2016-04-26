@@ -8,7 +8,6 @@ package com.hryun.gtranslate;
 
 import java.io.*;
 import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLEncoder;
 
@@ -16,7 +15,7 @@ public class TextToSpeech
 {
     // Text properties
     private String text;
-    private String language;
+    private Language language;
 
     // Audio properties
     private byte[] bytes;
@@ -27,7 +26,7 @@ public class TextToSpeech
         this.isProcessed = false;
     }
 
-    public TextToSpeech(String text, String language)
+    public TextToSpeech(String text, Language language)
     {
         this.text = text;
         this.language = language;
@@ -58,10 +57,6 @@ public class TextToSpeech
                 output.write(bytes);
                 output.close();
             }
-            catch(FileNotFoundException e)
-            {
-                e.printStackTrace();
-            }
             catch(IOException e)
             {
                 e.printStackTrace();
@@ -80,8 +75,8 @@ public class TextToSpeech
         catch(UnsupportedEncodingException e) { e.printStackTrace(); }
 
         // Creating the URL
-        String urlString = "https://translate.google.com/translate_tts?ie=UTF-8&q=" + encodedText + "&tl=" + language +
-                "&total=1&idx=0&client=t";
+        String urlString = "https://translate.google.com/translate_tts?ie=UTF-8&q=" + encodedText + "&tl=" +
+                language.getValue() + "&total=1&idx=0&client=t";
 
         try
         {
@@ -113,22 +108,18 @@ public class TextToSpeech
             // Mark the request as Processed
             isProcessed = true;
         }
-        catch(MalformedURLException e)
-        {
-            e.printStackTrace();
-        }
         catch(IOException e)
         {
             e.printStackTrace();
         }
     }
 
-    public String getLanguage()
+    public Language getLanguage()
     {
         return language;
     }
 
-    public void setLanguage(String language)
+    public void setLanguage(Language language)
     {
         this.language = language;
         this.isProcessed = false;

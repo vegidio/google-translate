@@ -6,9 +6,19 @@
 
 package com.hryun.gtranslate;
 
-public final class Language
+public enum Language
 {
-	public static final String ENGLISH    = "en";
-	public static final String PORTUGUESE = "pt";
-	public static final String SPANISH    = "es";
+    ENGLISH("en"), PORTUGUESE("pt"), SPANISH("es");
+
+    private final String value;
+
+    Language(String value)
+    {
+        this.value = value;
+    }
+
+    public String getValue()
+    {
+        return this.value;
+    }
 }

@@ -1,5 +1,8 @@
 # Google Translate
 
+[![JitPack](https://jitpack.io/v/vegidio/google-translate.svg)](https://jitpack.io/#vegidio/google-translate)
+[![Apache 2.0](https://img.shields.io/badge/license-Apache_License_2.0-blue.svg)](http://www.apache.org/licenses/LICENSE-2.0)
+
 This library lets you translate texts using the Google Translate API without an API key.
 
 ## Installation
@@ -21,7 +24,7 @@ Then add the dependency:
 
 ```
 dependencies {
-	compile 'com.github.vegidio:google-translate:1.0'
+	compile 'com.github.vegidio:google-translate:1.0.1'
 }
 ```
 
@@ -44,7 +47,7 @@ Then add the dependency:
 <dependency>
 	<groupId>com.github.vegidio</groupId>
 	<artifactId>google-translate</artifactId>
-	<version>1.0</version>
+	<version>1.0.1</version>
 </dependency>
 ```
 
@@ -52,7 +55,7 @@ Then add the dependency:
 
 ```java
 Translate translate = new Translate();
-		
+
 // Translating from English to Portuguese
 String text = translate.execute("I love cookies", Language.ENGLISH, Language.PORTUGUESE);
 
