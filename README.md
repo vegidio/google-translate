@@ -68,8 +68,8 @@ More examples can be found in the folder `src/test/java/com/hryun/gtranslate/`.
 
 ## License
 
-**google-translate** is released under the Apache License. See <a href="LICENSE.txt">LICENSE</a> for details.
+**google-translate** is released under the Apache License. See [LICENSE](LICENSE.txt) for details.
 
 ## Author
 
-Vinicius Egidio (<a href="http://vegidio.github.io">vegidio.github.io</a>)
+Vinicius Egidio ([vinicius.io](http://vinicius.io))
